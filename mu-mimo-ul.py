@@ -5,6 +5,7 @@ Created on Mon Jun 15 19:31:50 2015
 Multi-Input Multi-Output (MIMO) Channels
 Multi-User
 Uplink
+2 2-antenna TX and a 2-antenna RX
 
 @author: Hassan
 """
@@ -67,9 +68,9 @@ def info_rate(G_RX,H,Sigma_Z):
             Sigma_Z 
             ).dot( G.conj().transpose() ) 
             
-            if u==1: # if user 1
+            if   u==0: # if user 1
                 R_x1[i,i] = 0
-            else: # if user 2
+            elif u==1: # if user 2
                 R_x2[i,i] = 0
     
             Sigma_Y_X = G.dot( 
