@@ -71,56 +71,56 @@ def info_rate(G_RX,H,Sigma_Z):
     
 #%%
 
-NN = 2
-
-H = rayleigh(NN,NN)
-
-SNR_dB = arange(-2,10,0.5) # -2 to 4, increment = 0.5
-#SNR_dB = array([0])
-R_ZEROS = zeros( len(SNR_dB) )
-R_OPT = array(R_ZEROS)
-R_MF = array(R_ZEROS)
-R_ZF = array(R_ZEROS)
-R_MMSE = array(R_ZEROS)
-for snr_index in range(len(SNR_dB)):
-    print "SNR = " + str(SNR_dB[snr_index]) + " dB"
-    SNR = 10**(SNR_dB[snr_index]/10)    #signal to noise ratio (linear)        
-    sigma2 = 1.0/SNR            #noise variance
-
-    Sigma_Z = sigma2 * identity(NN)
+if __name__ == '__main__':
     
-    G = identity(NN)
-    R = info_rate_opt(G,H,Sigma_Z)
-    R_OPT[snr_index] = R
-    print 'R = %.2f' %(R)
+    NN = 2
     
-    G_MF = H.conj().transpose()
-    R = info_rate(G_MF,H,Sigma_Z)
-    R_MF[snr_index] = R
-    print 'R = %.2f' %(R)
+    H = rayleigh(NN,NN)
     
-    G_ZF = inv(H)  
-    R = info_rate(G_ZF,H,Sigma_Z)
-    R_ZF[snr_index] = R
-    print 'R = %.2f' %(R)
+    SNR_dB = arange(-2,10,0.5) # -2 to 4, increment = 0.5
+    #SNR_dB = array([0])
+    R_ZEROS = zeros( len(SNR_dB) )
+    R_OPT = array(R_ZEROS)
+    R_MF = array(R_ZEROS)
+    R_ZF = array(R_ZEROS)
+    R_MMSE = array(R_ZEROS)
+    for snr_index in range(len(SNR_dB)):
+        print "SNR = " + str(SNR_dB[snr_index]) + " dB"
+        SNR = 10**(SNR_dB[snr_index]/10)    #signal to noise ratio (linear)        
+        sigma2 = 1.0/SNR            #noise variance
     
-    G_MMSE = (H.conj().transpose()).dot( inv(H.dot(H.conj().transpose()) + Sigma_Z) )
-    R = info_rate(G_MMSE,H,Sigma_Z)
-    R_MMSE[snr_index] = R
-    print 'R = %.2f' %(R)    
-    
-    print '-' * 40
+        Sigma_Z = sigma2 * identity(NN)
+        
+        G = identity(NN)
+        R = info_rate_opt(G,H,Sigma_Z)
+        R_OPT[snr_index] = R
+        print 'R = %.2f' %(R)
+        
+        G_MF = H.conj().transpose()
+        R = info_rate(G_MF,H,Sigma_Z)
+        R_MF[snr_index] = R
+        print 'R = %.2f' %(R)
+        
+        G_ZF = inv(H)  
+        R = info_rate(G_ZF,H,Sigma_Z)
+        R_ZF[snr_index] = R
+        print 'R = %.2f' %(R)
+        
+        G_MMSE = (H.conj().transpose()).dot( inv(H.dot(H.conj().transpose()) + Sigma_Z) )
+        R = info_rate(G_MMSE,H,Sigma_Z)
+        R_MMSE[snr_index] = R
+        print 'R = %.2f' %(R)    
+        
+        print '-' * 40
 
-
-#%%
-
-SNR = 10**(SNR_dB/10)
-R_SHANNON = log(1+SNR)
-#plot(SNR_dB,R_SHANNON,label='log(1+SNR)')
-plot(SNR_dB,R_OPT ,'-',label='OPT')
-plot(SNR_dB,R_MMSE,'.-',label='LMMSE')
-plot(SNR_dB,R_ZF  ,'x-',label='ZF')
-plot(SNR_dB,R_MF  ,'+-',label='MF')
-xlabel('SNR (dB)')
-ylabel('Rate (nats/symbol)')
-legend(loc='upper left')
+    # plot
+    SNR = 10**(SNR_dB/10)
+    R_SHANNON = log(1+SNR)
+    #plot(SNR_dB,R_SHANNON,label='log(1+SNR)')
+    plot(SNR_dB,R_OPT ,'-',label='OPT')
+    plot(SNR_dB,R_MMSE,'.-',label='LMMSE')
+    plot(SNR_dB,R_ZF  ,'x-',label='ZF')
+    plot(SNR_dB,R_MF  ,'+-',label='MF')
+    xlabel('SNR (dB)')
+    ylabel('Rate (nats/symbol)')
+    legend(loc='upper left')
