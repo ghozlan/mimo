@@ -71,56 +71,53 @@ def info_rate(G_RX,H,Sigma_Z):
     
 #%%
 
+def rx_matrix(H,RX):
+    if RX == 'MF':
+        G = H.conj().transpose()
+    elif RX == 'ZF':
+        G = inv(H)  
+    elif RX == 'MMSE':
+        G = (H.conj().transpose()).dot(
+        H.dot(H.conj().transpose()) + 
+        Sigma_Z)
+    return G
+
 if __name__ == '__main__':
-    
-    NN = 2
-    
+    NN = 2    
     H = rayleigh(NN,NN)
+    SNR_dB = arange(-2,10,0.5)
     
-    SNR_dB = arange(-2,10,0.5) # -2 to 4, increment = 0.5
-    #SNR_dB = array([0])
     R_ZEROS = zeros( len(SNR_dB) )
-    R_OPT = array(R_ZEROS)
-    R_MF = array(R_ZEROS)
-    R_ZF = array(R_ZEROS)
-    R_MMSE = array(R_ZEROS)
+    #RX_LIST = ['OPT','MMSE','ZF','MF']
+    RX_LIST = ['MMSE','ZF','MF']
+    RX = dict()
+    for rx in ['OPT']+RX_LIST: 
+        RX[rx] = array(R_ZEROS)
+    
     for snr_index in range(len(SNR_dB)):
         print "SNR = " + str(SNR_dB[snr_index]) + " dB"
         SNR = 10**(SNR_dB[snr_index]/10)    #signal to noise ratio (linear)        
         sigma2 = 1.0/SNR            #noise variance
     
         Sigma_Z = sigma2 * identity(NN)
-        
+    
         G = identity(NN)
         R = info_rate_opt(G,H,Sigma_Z)
-        R_OPT[snr_index] = R
+        RX['OPT'][snr_index] = R
         print 'R = %.2f' %(R)
         
-        G_MF = H.conj().transpose()
-        R = info_rate(G_MF,H,Sigma_Z)
-        R_MF[snr_index] = R
-        print 'R = %.2f' %(R)
-        
-        G_ZF = inv(H)  
-        R = info_rate(G_ZF,H,Sigma_Z)
-        R_ZF[snr_index] = R
-        print 'R = %.2f' %(R)
-        
-        G_MMSE = (H.conj().transpose()).dot( inv(H.dot(H.conj().transpose()) + Sigma_Z) )
-        R = info_rate(G_MMSE,H,Sigma_Z)
-        R_MMSE[snr_index] = R
-        print 'R = %.2f' %(R)    
-        
-        print '-' * 40
-
+        for rx in RX_LIST:
+            G_RX = rx_matrix(H, rx)
+            R = info_rate(G_RX,H,Sigma_Z)        
+            RX[rx][snr_index] = R
+            print 'R = %.2f' %(R)
+    
     # plot
     SNR = 10**(SNR_dB/10)
     R_SHANNON = log(1+SNR)
-    #plot(SNR_dB,R_SHANNON,label='log(1+SNR)')
-    plot(SNR_dB,R_OPT ,'-',label='OPT')
-    plot(SNR_dB,R_MMSE,'.-',label='LMMSE')
-    plot(SNR_dB,R_ZF  ,'x-',label='ZF')
-    plot(SNR_dB,R_MF  ,'+-',label='MF')
+    line_style = {'OPT':'-','MMSE':'.-','ZF':'x-','MF':'+-'}
+    for rx in ['OPT'] + RX_LIST:
+        plot(SNR_dB,RX[rx],line_style[rx],label=rx)
     xlabel('SNR (dB)')
     ylabel('Rate (nats/symbol)')
     legend(loc='upper left')
