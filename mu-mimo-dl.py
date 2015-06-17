@@ -43,9 +43,9 @@ def precoding_matrices(H1,H2,RX):
             G = inv(H)  
         elif RX == 'MMSE':
             #R_xx = identity(2) #?XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            G = (H.conj().transpose()).dot(
+            G = (H.conj().transpose()).dot(inv(
             H.dot(H.conj().transpose()) + 
-            Sigma_Z)
+            Sigma_Z))
         G_RX.append(G)
     return G_RX
 
