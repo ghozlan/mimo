@@ -77,9 +77,9 @@ def rx_matrix(H,RX):
     elif RX == 'ZF':
         G = inv(H)  
     elif RX == 'MMSE':
-        G = (H.conj().transpose()).dot(
+        G = (H.conj().transpose()).dot(inv(
         H.dot(H.conj().transpose()) + 
-        Sigma_Z)
+        Sigma_Z))
     return G
 
 if __name__ == '__main__':

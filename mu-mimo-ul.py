@@ -40,10 +40,10 @@ def rx_matrices(H1,H2,RX):
         elif RX == 'ZF':
             G = inv(H)  
         elif RX == 'MMSE':
-            G = (H.conj().transpose()).dot(
+            G = (H.conj().transpose()).dot(inv(
             H1.dot(H1.conj().transpose()) + 
             H2.dot(H2.conj().transpose()) + 
-            Sigma_Z)
+            Sigma_Z))
         G_RX.append(G)
     return G_RX
 
