@@ -1,13 +1,12 @@
-##MIMO
-* Single-User 
-* Multi-User
-    * Uplink
-    * Downlink
-* Performance
-    * Information Rates
-    * Error Probability
-        * Bit (BEP)
-            * Uncoded
-            * Coded
-        * Word (WEP)
-* Channel State Information (CSI)
+# Multi-Input Multi-Output (MIMO) 
+
+## Single-User MIMO (SU-MIMO)
+
+See the python notebook [here](notebooks/mimo.ipynb) which compares
+the information rates over SU-MIMO channel  for:
+* Optimal receiver
+* Matched Filter (MF) receiver
+* Zero Forcing (ZF) receiver
+* Minimum Mean Square Error (MMSE) receiver
+
+Perfect channel state information at the receiver is assumed.
